@@ -30,6 +30,16 @@ namespace MVCProject.Controllers
             return View();
         }
 
+        public async Task<IActionResult> Detalhes(int id)
+        {
+            var contato = await _context.Contatos.FindAsync(id);
+            
+            if(contato == null)
+                return RedirectToAction(nameof(Index));
+
+            return View(contato);
+        }
+
         [HttpPost]        
         public async Task<IActionResult> Criar(Contato contato)
         {
@@ -64,6 +74,27 @@ namespace MVCProject.Controllers
 
             _context.Contatos.Update(contato);
             _context.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Deletar(int id)
+        {
+            var contato = await _context.Contatos.FindAsync(id);
+            
+            if(contato == null)
+                return RedirectToAction(nameof(Index));
+
+            return View(contato);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Deletar(Contato model)
+        {
+            var contato = await _context.Contatos.FindAsync(model.Id);
+
+            _context.Contatos.Remove(contato);
+            await _context.SaveChangesAsync(); 
 
             return RedirectToAction(nameof(Index));
         }
